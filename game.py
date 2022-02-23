@@ -5,6 +5,7 @@ from os import path
 import pygame
 
 from constants import *
+from graphics.screen import Screen
 
 
 class Game:
@@ -16,9 +17,7 @@ class Game:
         pygame.mixer.pre_init()
         pygame.mixer.init()
         pygame.init()
-        self.__canvas = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption('The Snake')
-        pygame.mouse.set_visible(False)
+        self.__screen = Screen(self)
         self.__clock = pygame.time.Clock()
 
         # Preload fonts that we are going to use
@@ -90,7 +89,7 @@ class Game:
         """ Updates mouse cursor position """
         pos_raton = pygame.mouse.get_pos()
         self.__cursor_rect.topleft = pos_raton
-        self.__canvas.blit(self.__cursor, self.__cursor_rect)
+        self.__screen.blit(self.__cursor, self.__cursor_rect)
         return
         
     def __render_quit_menu_confirmation_screen(self):
@@ -120,10 +119,10 @@ class Game:
                     elif cancel_button_rect.collidepoint(event.pos):
                         return
             
-            self.__canvas.fill(BLACK)
+            self.__screen.fill(BLACK)
             
-            self.__canvas.blit(self.__qc_menu_if_texture, interface_rect)
-            self.__canvas.blit(confirm_text, (SCREEN_WIDTH / 2 - 90, SCREEN_HEIGHT / 2 - 15))
+            self.__screen.blit(self.__qc_menu_if_texture, interface_rect)
+            self.__screen.blit(confirm_text, (SCREEN_WIDTH / 2 - 90, SCREEN_HEIGHT / 2 - 15))
 
             self.__update_cursor()
             pygame.display.flip()
@@ -175,17 +174,17 @@ class Game:
                         continue
 
             # We fill the background
-            self.__canvas.fill(BLACK)    
+            self.__screen.fill(BLACK)    
             # We paint ui components
-            self.__canvas.blit(self.__bg_texture, self.__bg_rect)
-            self.__canvas.blit(self.__mm_title_bg_texture, mm_title_bg_rect)
-            self.__canvas.blit(self.__button_play_texture, play_button_rect)
-            self.__canvas.blit(self.__button_info_texture, info_button_rect)
-            self.__canvas.blit(self.__button_quit_texture, quit_button_rect)
-            self.__canvas.blit(title_text, (164, 20))
-            self.__canvas.blit(play_button_text, (SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 - 115))
-            self.__canvas.blit(info_button_text, (SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT / 2 - 35))
-            self.__canvas.blit(quit_button_text, (SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + 50))
+            self.__screen.blit(self.__bg_texture, self.__bg_rect)
+            self.__screen.blit(self.__mm_title_bg_texture, mm_title_bg_rect)
+            self.__screen.blit(self.__button_play_texture, play_button_rect)
+            self.__screen.blit(self.__button_info_texture, info_button_rect)
+            self.__screen.blit(self.__button_quit_texture, quit_button_rect)
+            self.__screen.blit(title_text, (164, 20))
+            self.__screen.blit(play_button_text, (SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 - 115))
+            self.__screen.blit(info_button_text, (SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT / 2 - 35))
+            self.__screen.blit(quit_button_text, (SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + 50))
 
             self.__update_cursor()
 
@@ -224,17 +223,17 @@ class Game:
                         self.__state = MENU
                         continue
                     
-            self.__canvas.fill(BLACK)
-            self.__canvas.blit(self.__bg_texture, self.__bg_rect)
-            self.__canvas.blit(self.__info_bg_texture, interface_rect)
-            self.__canvas.blit(title_text, (164, 20))
-            self.__canvas.blit(info_line_1, (70, 200))
-            self.__canvas.blit(info_line_2, (70, 230))
-            self.__canvas.blit(info_line_3, (70, 260))
-            self.__canvas.blit(info_line_4, (70, 290))
+            self.__screen.fill(BLACK)
+            self.__screen.blit(self.__bg_texture, self.__bg_rect)
+            self.__screen.blit(self.__info_bg_texture, interface_rect)
+            self.__screen.blit(title_text, (164, 20))
+            self.__screen.blit(info_line_1, (70, 200))
+            self.__screen.blit(info_line_2, (70, 230))
+            self.__screen.blit(info_line_3, (70, 260))
+            self.__screen.blit(info_line_4, (70, 290))
 
-            self.__canvas.blit(self.__button_back_texture, button_back_rect)
-            self.__canvas.blit(back_button_text, (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 62))
+            self.__screen.blit(self.__button_back_texture, button_back_rect)
+            self.__screen.blit(back_button_text, (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 62))
             
             self.__update_cursor()
             pygame.display.flip()
@@ -277,7 +276,7 @@ class Game:
         # Draw snake head
         head = pygame.transform.rotate(self.__snake_head_sprite, snake_body_list[-1][1] * -90)
         head_rect = snake_body_list[-1][0]
-        self.__canvas.blit(head, head_rect)
+        self.__screen.blit(head, head_rect)
 
         # We draw snake body
         for XnY in range(1, len(snake_body_list) - 1):
@@ -311,13 +310,13 @@ class Game:
                 body = pygame.transform.rotate(self.__snake_body_sprite, snake_body_list[XnY][1] * -90)
 
             body_rect = snake_body_list[XnY][0]
-            self.__canvas.blit(body, body_rect)
+            self.__screen.blit(body, body_rect)
 
         # Lastly we draw the tail
         dir = snake_body_list[1][1]
         tail = pygame.transform.rotate(self.__snake_tail_sprite, dir * -90)
         tail_rect = snake_body_list[0][0]    
-        self.__canvas.blit(tail, tail_rect)
+        self.__screen.blit(tail, tail_rect)
 
     def __spawn_apple(self):
         """ Spawns a new apple in the map """
@@ -344,7 +343,7 @@ class Game:
                 img = self.__level_bar_start_texture
             else:
                 img = self.__level_bar_texture
-            self.__canvas.blit(img, (181 + i, 27))
+            self.__screen.blit(img, (181 + i, 27))
 
 
     def __render_health_bar(self, health):
@@ -359,7 +358,7 @@ class Game:
                 img = self.__health_bar_start
             else:
                 img = self.__health_bar
-            self.__canvas.blit(img, (181 + i, 59))
+            self.__screen.blit(img, (181 + i, 59))
 
     def __render_pause_menu(self):
         """ Renders pause screen"""
@@ -374,11 +373,11 @@ class Game:
         pause_text_2 = self.__font_md.render("Press 'Q' to back to the main menu", True, WHITE)
         pause_text_3 = self.__font_md.render("or press 'C' to resume the game", True, WHITE)
 
-        self.__canvas.blit(overlay, (0, 0))
-        self.__canvas.blit(self.__pause_interface_texture, interface_rect)
-        self.__canvas.blit(pause_text_1, (230, 220))
-        self.__canvas.blit(pause_text_2, (120, 280))
-        self.__canvas.blit(pause_text_3, (140, 320))
+        self.__screen.blit(overlay, (0, 0))
+        self.__screen.blit(self.__pause_interface_texture, interface_rect)
+        self.__screen.blit(pause_text_1, (230, 220))
+        self.__screen.blit(pause_text_2, (120, 280))
+        self.__screen.blit(pause_text_3, (140, 320))
         return
 
     def __render_game_over_interface(self):
@@ -409,10 +408,10 @@ class Game:
                     if quit_button.collidepoint(event.pos):
                         self.__state = MENU
                         break
-            self.__canvas.fill(BLACK)
-            self.__canvas.blit(self.__go_interface_texture, interface_rect)
-            self.__canvas.blit(play_button_text, (220, 210))
-            self.__canvas.blit(quit_button_text, (190, 354))
+            self.__screen.fill(BLACK)
+            self.__screen.blit(self.__go_interface_texture, interface_rect)
+            self.__screen.blit(play_button_text, (220, 210))
+            self.__screen.blit(quit_button_text, (190, 354))
 
             self.__update_cursor()
             pygame.display.flip()
@@ -595,8 +594,8 @@ class Game:
                     self.__play_level_up_sound()
             
             # We fill the background
-            self.__canvas.fill(BLACK)
-            self.__canvas.blit(self.__game_interface_texture, interface_rect)
+            self.__screen.fill(BLACK)
+            self.__screen.blit(self.__game_interface_texture, interface_rect)
 
 
             score_text = self.__font_sm.render("SCORE: {}".format(score), True, WHITE)
@@ -607,9 +606,9 @@ class Game:
             level_text_rect = level_text.get_rect()
             level_text_rect.topleft = (28, 52)
             
-            self.__canvas.blit(score_text, score_text_rect)
-            self.__canvas.blit(score_text, score_text_rect)
-            self.__canvas.blit(level_text, level_text_rect)
+            self.__screen.blit(score_text, score_text_rect)
+            self.__screen.blit(score_text, score_text_rect)
+            self.__screen.blit(level_text, level_text_rect)
 
             # We update the progress in the interface
             self.__render_level_bar(level_progress)
@@ -618,7 +617,7 @@ class Game:
             # We render the snake
             self.__render_snake(snake_body_list)
             # We render the apple
-            self.__canvas.blit(self.__red_apple_texture, apple_rect)
+            self.__screen.blit(self.__red_apple_texture, apple_rect)
             
             if self.__state == PAUSED:
                 self.__render_pause_menu()
