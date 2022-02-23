@@ -1,56 +1,10 @@
-import os
 import random
 import sys
+from os import path
 
 import pygame
 
-# Absolute path to avoid file reading errors.
-PATH = os.path.dirname(os.path.realpath(__file__))
-
-'''
- Global constants
-'''
-
-# Screen refresh rate (60 frames per second)
-FPS = 60
-
-# Colors
-WHITE  = (222, 238, 214)
-BLACK  = (  0,   0,   0)
-GREEN  = (  0, 155,   0)
-RED    = (255,   0,   0)
-BLUE   = (  0,   0, 255)
-YELLOW = (255, 255,   0)
-
-# Screen dimensions
-SCREEN_WIDTH  = 600
-SCREEN_HEIGHT = 600
-
-# Game cell dimensions
-CELL_SIZE   = 20
-
-# Directions
-UP    = 0
-RIGHT = 1
-DOWN  = 2
-LEFT  = 3
-
-# Game states
-MENU          = 0
-INSTRUCTIONS  = 1
-PLAY          = 2
-PAUSED        = 3
-GAME_OVER     = 4
-
-# Levels
-LEVEL = 1
-
-# Game grid (game play area limits)
-MIN_X = 10 # Min horizontal screen coordinate
-MIN_Y = 130 # Min vertical screen coordinate
-MAX_X = SCREEN_WIDTH - 10 # Max horizontal screen coordinate
-MAX_Y = SCREEN_HEIGHT - 10 # Max vertical screen coordinate
-GRID_CELLS = (MAX_X - MIN_X) // CELL_SIZE # 600 - 60 * 2 / 40 cells
+from constants import *
 
 '''
 Game initialization
@@ -69,54 +23,54 @@ font_md = pygame.font.SysFont('Comic Sans MS', 20, True)
 font_lg = pygame.font.SysFont('Comic Sans MS', 40, True, True)
 
 # Preload cursor texture
-cursor = pygame.image.load(os.path.join(PATH, 'res', 'images', 'mouse_icon.png'))
+cursor = pygame.image.load(path.join(PATH, 'res', 'images', 'mouse_icon.png'))
 cursor_rect = cursor.get_rect()
 
 # Preload Main menu background texture
-bg_texture = pygame.image.load(os.path.join(PATH, "res", 'images', "bg.png"))
+bg_texture = pygame.image.load(path.join(PATH, "res", 'images', "bg.png"))
 bg_texture = pygame.transform.scale(bg_texture, (SCREEN_WIDTH, SCREEN_HEIGHT))
 bg_rect = bg_texture.get_rect()
 
 # Preload game interface textures.
-qc_menu_if_texture  = pygame.image.load(os.path.join(PATH, 'res', 'images', 'quit_menu_interface.png'))
-mm_title_bg_texture = pygame.image.load(os.path.join(PATH, 'res', 'images', 'main_menu_title_bg.png'))
-info_bg_texture  = pygame.image.load(os.path.join(PATH, 'res', 'images', 'info_interface.png'))
-pause_interface_texture  = pygame.image.load(os.path.join(PATH, 'res', 'images', 'pause_interface.png'))
-go_interface_texture  = pygame.image.load(os.path.join(PATH, 'res', 'images', 'game_over_interface.png'))
-game_interface_texture  = pygame.image.load(os.path.join(PATH, 'res', 'images', 'game_interface.png'))
+qc_menu_if_texture  = pygame.image.load(path.join(PATH, 'res', 'images', 'quit_menu_interface.png'))
+mm_title_bg_texture = pygame.image.load(path.join(PATH, 'res', 'images', 'main_menu_title_bg.png'))
+info_bg_texture  = pygame.image.load(path.join(PATH, 'res', 'images', 'info_interface.png'))
+pause_interface_texture  = pygame.image.load(path.join(PATH, 'res', 'images', 'pause_interface.png'))
+go_interface_texture  = pygame.image.load(path.join(PATH, 'res', 'images', 'game_over_interface.png'))
+game_interface_texture  = pygame.image.load(path.join(PATH, 'res', 'images', 'game_interface.png'))
 
-level_bar_start_texture = pygame.image.load(os.path.join(PATH, 'res', 'images', 'level_bar_start.png'))
-level_bar_texture = pygame.image.load(os.path.join(PATH, 'res', 'images', 'level_bar.png'))
-level_bar_end_texture = pygame.image.load(os.path.join(PATH, 'res', 'images', 'level_bar_end.png'))
-health_bar_start = pygame.image.load(os.path.join(PATH, 'res', 'images', 'health_bar_start.png'))
-health_bar = pygame.image.load(os.path.join(PATH, 'res', 'images', 'health_bar.png'))
-health_bar_end = pygame.image.load(os.path.join(PATH, 'res', 'images', 'health_bar_end.png'))
+level_bar_start_texture = pygame.image.load(path.join(PATH, 'res', 'images', 'level_bar_start.png'))
+level_bar_texture = pygame.image.load(path.join(PATH, 'res', 'images', 'level_bar.png'))
+level_bar_end_texture = pygame.image.load(path.join(PATH, 'res', 'images', 'level_bar_end.png'))
+health_bar_start = pygame.image.load(path.join(PATH, 'res', 'images', 'health_bar_start.png'))
+health_bar = pygame.image.load(path.join(PATH, 'res', 'images', 'health_bar.png'))
+health_bar_end = pygame.image.load(path.join(PATH, 'res', 'images', 'health_bar_end.png'))
 
 # Preload buttons textures
-button_play_texture = pygame.image.load(os.path.join(PATH, 'res', 'images', 'buttons', 'button_play.png'))
-button_info_texture  = pygame.image.load(os.path.join(PATH, 'res', 'images', 'buttons', 'button_info.png'))
-button_quit_texture = pygame.image.load(os.path.join(PATH, 'res', 'images', 'buttons', 'button_quit.png'))
-button_back_texture = pygame.image.load(os.path.join(PATH, 'res', 'images', 'buttons', 'button_back.png'))
+button_play_texture = pygame.image.load(path.join(PATH, 'res', 'images', 'buttons', 'button_play.png'))
+button_info_texture  = pygame.image.load(path.join(PATH, 'res', 'images', 'buttons', 'button_info.png'))
+button_quit_texture = pygame.image.load(path.join(PATH, 'res', 'images', 'buttons', 'button_quit.png'))
+button_back_texture = pygame.image.load(path.join(PATH, 'res', 'images', 'buttons', 'button_back.png'))
 
 # Preload snake sprites. They should load at the beginning of the game
-snake_head_sprite = pygame.image.load(os.path.join(PATH, 'res', 'images', 'snake_head.png'))
+snake_head_sprite = pygame.image.load(path.join(PATH, 'res', 'images', 'snake_head.png'))
 snake_head_sprite = pygame.transform.scale(snake_head_sprite, (CELL_SIZE, CELL_SIZE))
-snake_body_sprite = pygame.image.load(os.path.join(PATH, 'res', 'images', 'snake_body.png'))
+snake_body_sprite = pygame.image.load(path.join(PATH, 'res', 'images', 'snake_body.png'))
 snake_body_sprite = pygame.transform.scale(snake_body_sprite, (CELL_SIZE, CELL_SIZE))
-snake_curved_body_sprite = pygame.image.load(os.path.join(PATH, 'res', 'images', 'snake_curved_body.png'))
+snake_curved_body_sprite = pygame.image.load(path.join(PATH, 'res', 'images', 'snake_curved_body.png'))
 snake_curved_body_sprite = pygame.transform.scale(snake_curved_body_sprite, (CELL_SIZE, CELL_SIZE))
-snake_tail_sprite = pygame.image.load(os.path.join(PATH, 'res', 'images', 'snake_tile.png'))
+snake_tail_sprite = pygame.image.load(path.join(PATH, 'res', 'images', 'snake_tile.png'))
 snake_tail_sprite = pygame.transform.scale(snake_tail_sprite, (CELL_SIZE, CELL_SIZE))
 
 # Preload apple sprite
-red_apple_texture = pygame.image.load(os.path.join(PATH, 'res', 'images', 'red_apple.png'))
+red_apple_texture = pygame.image.load(path.join(PATH, 'res', 'images', 'red_apple.png'))
 red_apple_texture = pygame.transform.scale(red_apple_texture, (CELL_SIZE, CELL_SIZE))
 red_apple_rect = red_apple_texture.get_rect()
 
 # Preload sounds
-mouse_click_sound = pygame.mixer.Sound(os.path.join(PATH, 'res', 'sounds', 'click.wav'))
-snake_eat_sound = pygame.mixer.Sound(os.path.join(PATH, 'res', 'sounds', 'snake_eat.mp3'))
-level_up_sound = pygame.mixer.Sound(os.path.join(PATH, 'res', 'sounds', 'oh_yeah.wav'))
+mouse_click_sound = pygame.mixer.Sound(path.join(PATH, 'res', 'sounds', 'click.wav'))
+snake_eat_sound = pygame.mixer.Sound(path.join(PATH, 'res', 'sounds', 'snake_eat.mp3'))
+level_up_sound = pygame.mixer.Sound(path.join(PATH, 'res', 'sounds', 'oh_yeah.wav'))
 
 # Flag to control that the game is running
 running = True
@@ -695,8 +649,8 @@ def run_game():
 
 # sounds
     try:
-        music_file = os.path.join(PATH, 'res', 'music', 'musica.mp3')
-        if os.path.isfile(music_file):
+        music_file = path.join(PATH, 'res', 'music', 'musica.mp3')
+        if path.isfile(music_file):
             music = pygame.mixer.music.load(music_file)
             pygame.mixer.music.play(loops=-1)
             pygame.mixer.music.set_volume(.5)
