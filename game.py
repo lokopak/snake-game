@@ -6,6 +6,7 @@ import pygame
 
 from constants import *
 from graphics.screen import Screen
+from sound.sound_manager import SoundManager
 
 
 class Game:
@@ -14,9 +15,8 @@ class Game:
         '''
         Game initialization
         '''
-        pygame.mixer.pre_init()
-        pygame.mixer.init()
         pygame.init()
+        self.__sound = SoundManager()
         self.__screen = Screen(self)
         self.__clock = pygame.time.Clock()
 
@@ -66,24 +66,18 @@ class Game:
         self.__red_apple_texture = pygame.transform.scale(self.__red_apple_texture, (CELL_SIZE, CELL_SIZE))
         self.__red_apple_rect = self.__red_apple_texture.get_rect()
 
-        # Preload sounds
-        self.__mouse_click_sound = pygame.mixer.Sound(path.join(PATH, 'res', 'sounds', 'click.wav'))
-        self.__snake_eat_sound = pygame.mixer.Sound(path.join(PATH, 'res', 'sounds', 'snake_eat.mp3'))
-        self.__level_up_sound = pygame.mixer.Sound(path.join(PATH, 'res', 'sounds', 'oh_yeah.wav'))
-
         # Flag to control that the game is running
         self.__running = False
         # Game state
         self.__state = MENU
-
-    def __play_click_sound(self):
-        """ Plays mouse click sound """
-        pygame.mixer.Channel(0).play(self.__mouse_click_sound)
-        return
         
     def get_screen(self) -> Screen:
         """ Returns game screen """
         return self.__screen
+    
+    def get_sound_manager(self) -> SoundManager:
+        """ Returns game sound manager """
+        return self.__sound
         
     def __render_quit_menu_confirmation_screen(self):
         """ Renders the confirmation menu to quit the game """
@@ -103,7 +97,7 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.__play_click_sound()
+                    self.__sound.play_click_sound()
                     # We quit
                     if confirm_button_rect.collidepoint(event.pos):                    
                         pygame.quit()
@@ -211,7 +205,7 @@ class Game:
                     self.__render_quit_menu_confirmation_screen()
                     continue
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.__play_click_sound()
+                    self.__sound.play_click_sound()
                     if button_back_rect.collidepoint(event.pos):
                         self.__state = MENU
                         continue
@@ -393,7 +387,7 @@ class Game:
                     self.__render_quit_menu_confirmation_screen()
                     continue
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.__play_click_sound()
+                    self.__sound.play_click_sound()
                     if new_play_button.collidepoint(event.pos):                    
                         self.__state = PLAY
                         break
@@ -408,16 +402,6 @@ class Game:
 
             self.__screen.update_cursor()
             pygame.display.flip()
-        return
-
-    def __play_eating_sound(self):
-        """ Plays the sound when the snake eats an object """
-        pygame.mixer.Channel(1).play(self.__snake_eat_sound, maxtime=2000) # Just reproduce first 2 seconds.
-        return
-
-    def __play_level_up_sound(self):
-        """ Plays level up sound """
-        pygame.mixer.Channel(2).play(self.__level_up_sound)
         return
 
     def __render_play_screen(self):
@@ -517,7 +501,7 @@ class Game:
                         continue
                     # Click on the pause button
                     if boton_pausa.collidepoint(event.pos):
-                        self.__play_click_sound()
+                        self.__sound.play_click_sound()
                         self.__state = PAUSED
                         break
 
@@ -569,7 +553,7 @@ class Game:
 
                 # The snake eats an object on the map
                 if snake_head_rect.colliderect(apple_rect):
-                    self.__play_eating_sound()
+                    self.__sound.play_eating_sound()
                     apple_x, apple_y = self.__spawn_apple()
                     snake_lenght += 1
                     score += 1
@@ -584,7 +568,7 @@ class Game:
                     current_snake_speed *= 1.5 # We increase the speed
 
                     # TODO: Optimize the transition between levels
-                    self.__play_level_up_sound()
+                    self.__sound.play_level_up_sound()
             
             # We fill the background
             self.__screen.fill(BLACK)
@@ -635,14 +619,6 @@ class Game:
     def run_game(self):
 
     # sounds
-        try:
-            music_file = path.join(PATH, 'res', 'music', 'musica.mp3')
-            if path.isfile(music_file):
-                music = pygame.mixer.music.load(music_file)
-                pygame.mixer.music.play(loops=-1)
-                pygame.mixer.music.set_volume(.5)
-        except:
-            pass
 
         self.__running = True
         while self.__running:
