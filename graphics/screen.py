@@ -1,7 +1,7 @@
 from os.path import join
 from typing import Tuple
 
-from constants import PATH, SCREEN_HEIGHT, SCREEN_WIDTH
+from constants import PATH, SCREEN_HEIGHT, SCREEN_WIDTH, WHITE
 from pygame import Rect, Surface, display, image, mouse
 
 from graphics.font import Font, FontType
@@ -36,7 +36,7 @@ class Screen:
         self.blit(self.__cursor, mouse.get_pos())
         return
     
-    def draw_string(self, string: str, dest: Tuple, font: FontType = FontType.MD, color: Tuple = None) -> None:
+    def draw_string(self, string: str, dest: Tuple, font: FontType = FontType.MD, color: Tuple = WHITE) -> None:
         """ Draws a text string onto screen surface """
         text_surface = self.__font.draw_string(string, font, color)
         self.blit(text_surface, dest)

@@ -27,7 +27,7 @@ class Font:
         self.__font_md = SysFont('Comic Sans MS', 20, True)
         self.__font_lg = SysFont('Comic Sans MS', 40, True, True)
         
-    def draw_string(self, string: str, font: FontType = FontType.SM, color: Tuple = WHITE) -> Surface:
+    def draw_string(self, string: str, font: FontType = FontType.SM, color: Tuple[int, int, int] = WHITE) -> Surface:
         """ Generate a surface with rendered text """
         if font == FontType.SM:
             _font = self.__font_sm

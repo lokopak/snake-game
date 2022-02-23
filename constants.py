@@ -37,6 +37,7 @@ INSTRUCTIONS  = 1
 PLAY          = 2
 PAUSED        = 3
 GAME_OVER     = 4
+QUIT_STATUS   = 5
 
 # Levels
 LEVEL = 1
