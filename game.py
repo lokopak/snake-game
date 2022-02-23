@@ -635,9 +635,3 @@ class Game:
                 self.__render_game_over_interface()
             else:
                 self.__running = False
-
-game = Game()
-game.run_game()
-
-pygame.quit()
-sys.exit()
