@@ -25,10 +25,6 @@ class Game:
         self.__font_md = pygame.font.SysFont('Comic Sans MS', 20, True)
         self.__font_lg = pygame.font.SysFont('Comic Sans MS', 40, True, True)
 
-        # Preload cursor texture
-        self.__cursor = pygame.image.load(path.join(PATH, 'res', 'images', 'mouse_icon.png'))
-        self.__cursor_rect = self.__cursor.get_rect()
-
         # Preload Main menu background texture
         self.__bg_texture = pygame.image.load(path.join(PATH, "res", 'images', "bg.png"))
         self.__bg_texture = pygame.transform.scale(self.__bg_texture, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -84,13 +80,10 @@ class Game:
         """ Plays mouse click sound """
         pygame.mixer.Channel(0).play(self.__mouse_click_sound)
         return
-
-    def __update_cursor(self):
-        """ Updates mouse cursor position """
-        pos_raton = pygame.mouse.get_pos()
-        self.__cursor_rect.topleft = pos_raton
-        self.__screen.blit(self.__cursor, self.__cursor_rect)
-        return
+        
+    def get_screen(self) -> Screen:
+        """ Returns game screen """
+        return self.__screen
         
     def __render_quit_menu_confirmation_screen(self):
         """ Renders the confirmation menu to quit the game """
@@ -124,7 +117,7 @@ class Game:
             self.__screen.blit(self.__qc_menu_if_texture, interface_rect)
             self.__screen.blit(confirm_text, (SCREEN_WIDTH / 2 - 90, SCREEN_HEIGHT / 2 - 15))
 
-            self.__update_cursor()
+            self.__screen.update_cursor()
             pygame.display.flip()
 
     def __render_main_menu_screen(self):
@@ -162,7 +155,7 @@ class Game:
                         self.__render_quit_menu_confirmation_screen()
                         continue
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.__play_click_sound()
+                    self.__sound.play_click_sound()
                     if info_button_rect.collidepoint(event.pos):
                         self.__state = INSTRUCTIONS
                         continue
@@ -186,7 +179,7 @@ class Game:
             self.__screen.blit(info_button_text, (SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT / 2 - 35))
             self.__screen.blit(quit_button_text, (SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + 50))
 
-            self.__update_cursor()
+            self.__screen.update_cursor()
 
             pygame.display.flip()
             return
@@ -235,7 +228,7 @@ class Game:
             self.__screen.blit(self.__button_back_texture, button_back_rect)
             self.__screen.blit(back_button_text, (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 62))
             
-            self.__update_cursor()
+            self.__screen.update_cursor()
             pygame.display.flip()
 
     def __convert_pos_to_coords(self, pos) -> tuple:
@@ -413,7 +406,7 @@ class Game:
             self.__screen.blit(play_button_text, (220, 210))
             self.__screen.blit(quit_button_text, (190, 354))
 
-            self.__update_cursor()
+            self.__screen.update_cursor()
             pygame.display.flip()
         return
 
@@ -622,7 +615,7 @@ class Game:
             if self.__state == PAUSED:
                 self.__render_pause_menu()
             
-            self.__update_cursor()
+            self.__screen.update_cursor()
             pygame.display.flip()
             self.__clock.tick(FPS)
 
