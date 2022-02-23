@@ -77,7 +77,7 @@ class Game:
         self.__level_up_sound = pygame.mixer.Sound(path.join(PATH, 'res', 'sounds', 'oh_yeah.wav'))
 
         # Flag to control that the game is running
-        self.__running = True
+        self.__running = False
         # Game state
         self.__state = MENU
 
@@ -652,6 +652,7 @@ class Game:
         except:
             pass
 
+        self.__running = True
         while self.__running:
             self.__process_input()
             self.__game_update()
