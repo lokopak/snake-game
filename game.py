@@ -20,11 +20,6 @@ class Game:
         self.__screen = Screen(self)
         self.__clock = pygame.time.Clock()
 
-        # Preload fonts that we are going to use
-        self.__font_sm = pygame.font.SysFont('Comic Sans MS', 16)
-        self.__font_md = pygame.font.SysFont('Comic Sans MS', 20, True)
-        self.__font_lg = pygame.font.SysFont('Comic Sans MS', 40, True, True)
-
         # Preload Main menu background texture
         self.__bg_texture = pygame.image.load(path.join(PATH, "res", 'images', "bg.png"))
         self.__bg_texture = pygame.transform.scale(self.__bg_texture, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -129,11 +124,6 @@ class Game:
         play_button_rect.center = (SCREEN_WIDTH / 2 - 20, SCREEN_HEIGHT / 2 - 98)
         info_button_rect.center = (SCREEN_WIDTH / 2 - 22, SCREEN_HEIGHT / 2 - 18)
         quit_button_rect.center = (SCREEN_WIDTH / 2 - 20, SCREEN_HEIGHT / 2 + 67)
-        
-        title_text       = self.__font_lg.render("THE SNAKE", True, WHITE)
-        play_button_text = self.__font_md.render("PLAY", True, WHITE)
-        info_button_text = self.__font_md.render("INSTRUCTIONS", True, WHITE)
-        quit_button_text = self.__font_md.render("QUIT", True, WHITE)
 
         # We execute this screen while 'state' is = MENU
         while self.__state == MENU:        
@@ -168,10 +158,10 @@ class Game:
             self.__screen.blit(self.__button_play_texture, play_button_rect)
             self.__screen.blit(self.__button_info_texture, info_button_rect)
             self.__screen.blit(self.__button_quit_texture, quit_button_rect)
-            self.__screen.blit(title_text, (164, 20))
-            self.__screen.blit(play_button_text, (SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 - 115))
-            self.__screen.blit(info_button_text, (SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT / 2 - 35))
-            self.__screen.blit(quit_button_text, (SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + 50))
+            self.__screen.draw_string("THE SNAKE", (250, 30))
+            self.__screen.draw_string("PLAY", (SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 - 115))
+            self.__screen.draw_string("INSTRUCTIONS", (SCREEN_WIDTH / 2 - 80, SCREEN_HEIGHT / 2 - 35))
+            self.__screen.draw_string("QUIT", (SCREEN_WIDTH / 2 - 30, SCREEN_HEIGHT / 2 + 50))
 
             self.__screen.update_cursor()
 
@@ -184,19 +174,12 @@ class Game:
         self.__bg_rect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
         
         interface_rect = self.__info_bg_texture.get_rect()
-        title_text = self.__font_lg.render("THE SNAKE", True, WHITE)
+        # title_text = self.__font_lg.render("THE SNAKE", True, WHITE)
 
         button_back_rect = self.__button_back_texture.get_rect()
 
         interface_rect.topleft = (0, 0)
         button_back_rect.topleft = (SCREEN_WIDTH - 206, SCREEN_HEIGHT - 78)
-        
-        info_line_1 = self.__font_md.render("- Do not touch the edges of the playing area", True, WHITE)
-        info_line_2 = self.__font_md.render("- Eat all the apples you can", True, WHITE)
-        info_line_3 = self.__font_md.render("- Don't bite yourself!", True, WHITE)
-        info_line_4 = self.__font_md.render("- Have fun playing with this nice snake...", True, WHITE)
-        
-        back_button_text = self.__font_md.render("BACK", True, WHITE)
 
         # We execute this screen while 'state' is = INSTRUCTIONS
         while self.__state == INSTRUCTIONS:
@@ -213,14 +196,14 @@ class Game:
             self.__screen.fill(BLACK)
             self.__screen.blit(self.__bg_texture, self.__bg_rect)
             self.__screen.blit(self.__info_bg_texture, interface_rect)
-            self.__screen.blit(title_text, (164, 20))
-            self.__screen.blit(info_line_1, (70, 200))
-            self.__screen.blit(info_line_2, (70, 230))
-            self.__screen.blit(info_line_3, (70, 260))
-            self.__screen.blit(info_line_4, (70, 290))
+            self.__screen.draw_string("THE SNAKE", (250, 30))
+            self.__screen.draw_string("- Do not touch the edges of the playing area", (70, 200))
+            self.__screen.draw_string("- Eat all the apples you can", (70, 230))
+            self.__screen.draw_string("- Don't bite yourself!", (70, 260))
+            self.__screen.draw_string("- Have fun playing with this nice snake...", (70, 290))
 
             self.__screen.blit(self.__button_back_texture, button_back_rect)
-            self.__screen.blit(back_button_text, (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 62))
+            self.__screen.blit("BACK", (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 62))
             
             self.__screen.update_cursor()
             pygame.display.flip()
@@ -354,17 +337,12 @@ class Game:
         overlay.set_alpha(150)
         interface_rect = self.__pause_interface_texture.get_rect()
         interface_rect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT/2)
-        
-        
-        pause_text_1 = self.__font_md.render("GAME PAUSED", True, WHITE)
-        pause_text_2 = self.__font_md.render("Press 'Q' to back to the main menu", True, WHITE)
-        pause_text_3 = self.__font_md.render("or press 'C' to resume the game", True, WHITE)
 
         self.__screen.blit(overlay, (0, 0))
         self.__screen.blit(self.__pause_interface_texture, interface_rect)
-        self.__screen.blit(pause_text_1, (230, 220))
-        self.__screen.blit(pause_text_2, (120, 280))
-        self.__screen.blit(pause_text_3, (140, 320))
+        self.__screen.draw_string("GAME PAUSED", (230, 220))
+        self.__screen.draw_string("Press 'Q' to back to the main menu", (120, 280))
+        self.__screen.draw_string("or press 'C' to resume the game", (140, 320))
         return
 
     def __render_game_over_interface(self):
@@ -377,9 +355,6 @@ class Game:
         new_play_button = pygame.Rect(SCREEN_WIDTH / 2 - 131, SCREEN_HEIGHT / 2 - 96, 252 , 42)
         quit_button     = pygame.Rect(SCREEN_WIDTH / 2 - 118, SCREEN_HEIGHT / 2 + 52, 223 , 42)
         
-        play_button_text = self.__font_md.render("PLAY AGAIN", True, WHITE)
-        quit_button_text = self.__font_md.render("QUIT TO MENU", True, WHITE)
-
         # We execute this screen while 'state' is = INSTRUCTIONS
         while self.__state == GAME_OVER:
             for event in pygame.event.get():
@@ -397,8 +372,8 @@ class Game:
                         break
             self.__screen.fill(BLACK)
             self.__screen.blit(self.__go_interface_texture, interface_rect)
-            self.__screen.blit(play_button_text, (220, 210))
-            self.__screen.blit(quit_button_text, (190, 354))
+            self.__screen.draw_string("PLAY AGAIN", (220, 210))
+            self.__screen.draw_string("QUIT TO MENU", (190, 354))
 
             self.__screen.update_cursor()
             pygame.display.flip()
@@ -573,19 +548,9 @@ class Game:
             # We fill the background
             self.__screen.fill(BLACK)
             self.__screen.blit(self.__game_interface_texture, interface_rect)
-
-
-            score_text = self.__font_sm.render("SCORE: {}".format(score), True, WHITE)
-            score_text_rect = score_text.get_rect()
-            score_text_rect.topleft = (28, 24)
-
-            level_text = self.__font_sm.render("LEVEL: {}".format(current_level), True, WHITE)
-            level_text_rect = level_text.get_rect()
-            level_text_rect.topleft = (28, 52)
             
-            self.__screen.blit(score_text, score_text_rect)
-            self.__screen.blit(score_text, score_text_rect)
-            self.__screen.blit(level_text, level_text_rect)
+            self.__screen.draw_string("SCORE: {}".format(score), (28, 20))
+            self.__screen.draw_string("LEVEL: {}".format(current_level), (28, 48))
 
             # We update the progress in the interface
             self.__render_level_bar(level_progress)

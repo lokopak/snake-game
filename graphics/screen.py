@@ -4,6 +4,8 @@ from typing import Tuple
 from constants import PATH, SCREEN_HEIGHT, SCREEN_WIDTH
 from pygame import Rect, Surface, display, image, mouse
 
+from graphics.font import Font, FontType
+
 
 class Screen:
     """ This class is responsible for drawing elements on the screen """
@@ -14,6 +16,7 @@ class Screen:
         self.__canvas = display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         display.set_caption('The Snake')
         mouse.set_visible(False)
+        self.__font = Font()
         self.__load_resources()
         
     def __load_resources(self) -> None:
@@ -32,3 +35,8 @@ class Screen:
         """ Updates mouse cursor position """
         self.blit(self.__cursor, mouse.get_pos())
         return
+    
+    def draw_string(self, string: str, dest: Tuple, font: FontType = FontType.MD, color: Tuple = None) -> None:
+        """ Draws a text string onto screen surface """
+        text_surface = self.__font.draw_string(string, font, color)
+        self.blit(text_surface, dest)
