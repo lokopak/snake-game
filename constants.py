@@ -47,3 +47,6 @@ MIN_Y = 130 # Min vertical screen coordinate
 MAX_X = SCREEN_WIDTH - 10 # Max horizontal screen coordinate
 MAX_Y = SCREEN_HEIGHT - 10 # Max vertical screen coordinate
 GRID_CELLS = (MAX_X - MIN_X) // CELL_SIZE # 600 - 60 * 2 / 40 cells
+
+# Initial snake speed
+INITIAL_SPEED = 2.5 / FPS
