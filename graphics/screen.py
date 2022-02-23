@@ -14,7 +14,7 @@ class Screen:
         self.__canvas = display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         display.set_caption('The Snake')
         mouse.set_visible(False)
-        self.load_resources()
+        self.__load_resources()
         
     def __load_resources(self) -> None:
         """ Pre-loads required resources like cursor texture """ 
